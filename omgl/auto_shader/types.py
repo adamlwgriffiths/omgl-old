@@ -7,6 +7,28 @@ from omgl.gl import glsl_version
 # varying vec3 texture_coords[];
 
 class ShaderType(BaseType):
+    def __init__(self, glsl_gt=None, glsl_lt=None, glsl_gteq=None, glsl_lteq=None, glsl_eq=None, **kwargs):
+        super(ShaderType, self).__init__(**kwargs)
+        self.glsl_gt = glsl_gt
+        self.glsl_lt = glsl_lt
+        self.glsl_gteq = glsl_gteq
+        self.glsl_lteq = glsl_lteq
+        self.glsl_eq = glsl_eq
+
+    def meets_glsl_version(self):
+        v = glsl_version()
+        if self.glsl_gt and self.glsl_gt <= v:
+            return False
+        if self.glsl_lt and self.glsl_lt >= v:
+            return False
+        if self.glsl_gteq and self.glsls_gteq < v:
+            return False
+        if self.glsl_lteq and self.glsl_lteq > v:
+            return False
+        if self.glsl_eq and self.glsl_eq != v:
+            return False
+        return True
+
     def source(self):
         raise NotImplementedError
 
@@ -95,7 +117,7 @@ class VaryingType(ShaderVariableType):
 
 class FragType(ShaderVariableType):
     def __init__(self, type, **kwargs):
-        super(FragType, self).__init__(type, **kwargs)
+        super(FragType, self).__init__(type, glsl_gt=120, **kwargs)
 
     def source(self, name):
         if glsl_version() <= 120:

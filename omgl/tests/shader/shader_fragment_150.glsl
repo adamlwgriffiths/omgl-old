@@ -6,5 +6,5 @@ out vec3 out_frag;
 
 void main()
 {
-    out_frag = texture2D(in_texture, in_texture_coord.st);
+    out_frag = texture(in_texture, in_texture_coord.st);
 }

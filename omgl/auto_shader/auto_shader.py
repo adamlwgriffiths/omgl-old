@@ -53,24 +53,28 @@ class AutoShader(Shader, Model):
         macros = [
             macro.source()
             for name, macro in self._glsl_macros.iteritems()
+            if macro.meets_glsl_version()
         ]
 
         # process the variables first
         variables = [
             variable.source(name)
             for name, variable in self._glsl_variables.iteritems()
+            if variable.meets_glsl_version()
         ]
 
         # pre-declare all functions
         predeclarations = [
             function.signature() + ';'
             for name, function in self._glsl_decorators.iteritems()
+            if function.meets_glsl_version()
         ]
 
         # process the function source
         functions = [
             function.source(self)
             for name, function in self._glsl_decorators.iteritems()
+            if function.meets_glsl_version()
         ]
 
         # convert to a source string

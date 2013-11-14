@@ -63,3 +63,19 @@ class TestProgram(unittest.TestCase):
         self.assertEqual(p.attributes['in_model_view'], 10)
         self.assertEqual(p.attributes['in_position'], 15)
 
+    def test_program_load_120(self):
+        if omgl.gl.glsl_version() > 120:
+            return unittest.skip("Legacy profile not being used")
+
+        vs = os.path.join(os.path.dirname(__file__), 'shader_vertex_120.glsl')
+        fs = os.path.join(os.path.dirname(__file__), 'shader_fragment_120.glsl')
+        p = omgl.program.load(vs, fs)
+
+    def test_program_load_150(self):
+        if omgl.gl.glsl_version() <= 120:
+            return unittest.skip("Legacy profile not being used")
+
+        vs = os.path.join(os.path.dirname(__file__), 'shader_vertex_150.glsl')
+        fs = os.path.join(os.path.dirname(__file__), 'shader_fragment_150.glsl')
+        p = omgl.program.load(vs, fs)
+
