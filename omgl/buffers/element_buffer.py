@@ -20,6 +20,7 @@ class ElementBuffer(Buffer):
         Buffer.__init__(self, GL.GL_ELEMENT_ARRAY_BUFFER, data, usage)
         self.polygons = polygons or {}
 
+"""
     def draw(self, name=None, polygon_type=None):
         def draw_(name, polygon_type):
             count = reduce(lambda x, y: x*y, self._data.dtype[name].subdtype[1])
@@ -41,3 +42,4 @@ class ElementBuffer(Buffer):
                 # offset = 0
                 #GL.glDrawElements()
                 raise NotImplementedError
+"""
