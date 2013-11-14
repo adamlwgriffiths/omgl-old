@@ -3,10 +3,20 @@ import re
 import numpy as np
 from OpenGL import GL
 from OpenGL.error import Error, GLError
+from .shader import Shader
 
 
 def create(*shaders, **attributes):
     return Program(*shaders, **attributes)
+
+def load(vertex, fragment, **attributes):
+    with open(vertex, 'r') as f:
+        source = f.read()
+        vs = Shader(Shader.vertex, source)
+    with open(fragment, 'r') as f:
+        source = f.read()
+        fs = Shader(Shader.fragment, source)
+    return Program(vs, fs, **attributes)
 
 
 class ProgramException(Exception):
