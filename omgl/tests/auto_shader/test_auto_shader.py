@@ -57,6 +57,13 @@ class ValidFragmentShader(omgl.auto_shader.FragmentAutoShader):
             out_frag = texture(in_texture, ex_texture_coord);
             """
 
+class InheritedFragmentShader(ValidFragmentShader):
+    @omgl.auto_shader.glsl('vec2', ['in vec4 variable', 'float f'])
+    def test(self):
+        return """
+        // im a test function
+        return variable.yz * f;
+        """
 
 class TestAutoShader(unittest.TestCase):
     def test_valid_autoshader(self):
@@ -72,6 +79,11 @@ class TestAutoShader(unittest.TestCase):
         # over-ride the default attribute value
         vs = ValidVertexShader(in_position=3)
         self.assertEqual(vs.in_position, 3)
+
+    def test_inherited(self):
+        fs = InheritedFragmentShader()
+        self.assertTrue('variable.yz' in fs.source)
+        self.assertFalse('variable.xy' in fs.source)
 
 
 if __name__ == '__main__':
