@@ -80,3 +80,17 @@ def np_type_to_gl_enum(type):
         # probably best to explode if user's aren't explicit about the size
         #np.float:       GL.GL_DOUBLE if sys.maxsize > 2**32 else GL.GL_FLOAT,
     }[type]
+
+def memoize(obj):
+    """Decorator to cache the output of functions.
+    """
+    cache = obj.cache = {}
+
+    import functools
+    @functools.wraps(obj)
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in cache:
+            cache[key] = obj(*args, **kwargs)
+        return cache[key]
+    return memoizer
