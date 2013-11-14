@@ -6,7 +6,8 @@ from omgl.tests import setUpModule, tearDownModule
 
 
 class ValidVertexShader(omgl.auto_shader.VertexAutoShader):
-    in_position = omgl.auto_shader.AttributeType('vec3', default=2, glsl_gt=120)
+    #in_position = omgl.auto_shader.AttributeType('vec4', default=2)
+    in_position = omgl.auto_shader.AttributeType('vec4')
     in_texture_coord = omgl.auto_shader.AttributeType('vec2', glsl_gt=120)
 
     in_projection = omgl.auto_shader.UniformType('mat4', glsl_gt=120)
@@ -17,7 +18,7 @@ class ValidVertexShader(omgl.auto_shader.VertexAutoShader):
     @omgl.auto_shader.glsl(name='main', glsl_lteq=120)
     def main_120(self):
         return """
-        gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+        gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * in_position;
         gl_FrontColor = gl_Color;
         """
 
@@ -71,9 +72,15 @@ class TestAutoShader(unittest.TestCase):
         fs = ValidFragmentShader()
         p = omgl.program.create(vs,fs)
 
+    """
     def test_default_attributes(self):
         vs = ValidVertexShader()
         self.assertEqual(vs.in_position, 2)
+
+        fs = ValidFragmentShader()
+        p = omgl.program.create(vs,fs)
+        self.assertEqual(p.attributes['in_position'], 2)
+    """
 
     def test_override_attributes(self):
         # over-ride the default attribute value
