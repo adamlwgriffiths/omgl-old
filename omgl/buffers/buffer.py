@@ -3,7 +3,11 @@ import numpy as np
 from OpenGL import GL
 
 
-def empty(target, shape, dtype, usage=GL.GL_DYNAMIC_DRAW):
+def empty(target, shape, dtype=None, usage=GL.GL_DYNAMIC_DRAW):
+    # we assume float32 for opengl
+    if not dtype:
+        dtype = np.float32
+        
     data = np.empty(shape, dtype=dtype)
     return Buffer(target, data, usage)
 
