@@ -44,7 +44,7 @@ class TestFragmentShader(unittest.TestCase):
 
         void main()
         {
-            gl_FragColor = texture2D(in_texture, in_texture_coord.st);
+            gl_FragColor = texture(in_texture, in_texture_coord.st);
         }
         """
         s = omgl.fragment_shader.create(source)
@@ -56,7 +56,7 @@ class TestFragmentShader(unittest.TestCase):
         source = """
         void main()
         {
-            gl_FragColor = texture2D(in_texture, in_texture_coord.st);
+            gl_FragColor = texture(in_texture, in_texture_coord.st);
         }
         """
         with self.assertRaises(omgl.shader.ShaderException):
