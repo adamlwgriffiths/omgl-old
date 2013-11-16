@@ -29,12 +29,18 @@ class Program(object):
 
         self.shaders = shaders
 
+        _attributes = {}
+
         # attach our shaders
         for shader in shaders:
+            _attributes.update(shader._attributes)
             GL.glAttachShader(self._handle, shader.handle)
 
+        # use the manually sent ones in preference
+        _attributes.update(attributes)
+
         # set attributes
-        for name, value in attributes.iteritems():
+        for name, value in _attributes.iteritems():
             GL.glBindAttribLocation(self._handle, value, name)
 
         self.link()

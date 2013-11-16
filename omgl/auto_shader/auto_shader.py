@@ -18,6 +18,7 @@ class ShaderMeta(ModelMeta):
         glsl_macros = OrderedDict()
         glsl_variables = OrderedDict()
         glsl_decorators = OrderedDict()
+        glsl_attributes = OrderedDict()
 
         for base in reversed(bases):
             if hasattr(base, '_glsl_macros'):
@@ -26,10 +27,14 @@ class ShaderMeta(ModelMeta):
                 glsl_variables.update(base._glsl_variables)
             if hasattr(base, '_glsl_decorators'):
                 glsl_decorators.update(base._glsl_decorators)
+            if hasattr(base, '_glsl_attributes'):
+                glsl_attributes.update(base._glsl_attributes)
 
         for key, value in attrs.items():
             if isinstance(value, ShaderVariableType):
                 glsl_variables[key] = value
+                if isinstance(value, AttributeType):
+                    glsl_attributes[key] = value
             elif isinstance(value, ShaderMacroType):
                 glsl_macros[key] = value
             elif hasattr(value, '_glsl_decorator'):
@@ -37,6 +42,7 @@ class ShaderMeta(ModelMeta):
 
         attrs['_glsl_macros'] = glsl_macros
         attrs['_glsl_variables'] = glsl_variables
+        attrs['_glsl_attributes'] = glsl_attributes
         attrs['_glsl_decorators'] = glsl_decorators
 
         return ModelMeta.__new__(cls, name, bases, attrs)
@@ -47,6 +53,19 @@ class AutoShader(Shader, Model):
     def __init__(self, type, **kwargs):
         Model.__init__(self, raw_data=kwargs)
         Shader.__init__(self, type, self._gather_source())
+
+    @property
+    def _attributes(self):
+        return {
+            name: self._data[name]
+            for name in self._glsl_attributes.iterkeys()
+            if self._data[name] is not None
+        }
+
+    @_attributes.setter
+    def _attributes(self, attrs):
+        for name, value in attrs.iteritems():
+            self._data[name] = value
 
     def _gather_source(self):
         # process our defines

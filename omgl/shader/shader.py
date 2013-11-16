@@ -5,13 +5,13 @@ from OpenGL import GL
 from OpenGL.error import Error, GLError
 
 
-def create(type, source):
-    return Shader(type, source)
+def create(type, source, **attributes):
+    return Shader(type, source, **attributes)
 
-def load(type, filename):
+def load(type, filename, **attributes):
     with open(filename, 'r') as f:
         source = f.read()
-        return Shader(type, source)
+        return Shader(type, source, **attributes)
 
 
 class ShaderException(Exception):
@@ -83,10 +83,11 @@ class Shader(object):
         ]
         return errors
 
-    def __init__(self, type, source):
+    def __init__(self, type, source, **attributes):
         self._handle = GL.glCreateShader(type)
         self.type = type
         self.source = source
+        self._attributes = attributes
         self._compile()
 
     def __del__(self):
