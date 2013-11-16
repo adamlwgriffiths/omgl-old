@@ -46,14 +46,14 @@ class ExtensionType(ShaderMacroType):
         self.extension = extension
         if mode:
             self.mode = mode
-        elif enable:
-            self.mode = self.enable
+        elif enable is not None:
+            self.mode = self.enable if enable else self.disable
         elif require:
             self.mode = self.require
         elif warn:
             self.mode = self.warn
-        elif disable:
-            self.mode = self.disable
+        elif disable is not None:
+            self.mode = self.disable if disable else self.enable
 
     def source(self):
         return '#extension {extension} : {mode}'.format(
