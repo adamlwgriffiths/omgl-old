@@ -13,6 +13,7 @@ class TestTexture3D(unittest.TestCase):
         t = omgl.texture3d.create(data)
         actual = t.get_data()
         self.assertTrue(np.array_equal(actual, data), (size, actual, data))
+        return t
 
     #
     # Float 16

@@ -80,7 +80,7 @@ class Texture(Model):
     def _create(self):
         with self:
             for name, property in self._texture_properties.iteritems():
-                value = self._data[name]
+                value = self[name]
                 property.sync(self, value)
 
             format = self.infer_format(self._npdata)
@@ -150,6 +150,30 @@ class Texture(Model):
     @property
     def data(self):
         return self._npdata
+
+    @data.setter
+    def data(self, data):
+        """Used to change the 
+        """
+        if not isinstance(data, np.ndarray):
+            data = np.array(data)
+
+        original = [
+            self._npdata.nbytes,
+            self.type,
+            self.internal_format,
+            self.size,
+        ]
+        self._npdata = data
+        new = [
+            self._npdata.nbytes,
+            np_type_to_gl_enum(self._npdata.dtype.type),
+            self.infer_format(self._npdata),
+            self._npdata.shape[:-1],
+        ]
+
+        if original != new:
+            self._create()
 
     def get_data(self):
         """Returns the data stored in OpenGL.

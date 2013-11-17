@@ -13,6 +13,7 @@ class TestTexture(unittest.TestCase):
         t = omgl.texture.create(data)
         actual = t.get_data()
         self.assertTrue(np.array_equal(actual, data), (size, actual, data))
+        return t
 
     #
     # Float 16
@@ -138,6 +139,22 @@ class TestTexture(unittest.TestCase):
     def test_texture_auto_i32_rgba(self):
         self.texture_auto(4, np.int32)
 
+
+    def test_texture_set_data(self):
+        data = np.arange(32*32*4, dtype=np.float32)
+        data.shape = (32,32,4)
+
+        t = omgl.texture.create(data)
+        actual = t.get_data()
+        self.assertTrue(np.array_equal(actual, data), (actual, data))
+
+        data = np.arange(64*64*4, dtype=np.float32)
+        data.shape = (64,64,4)
+
+        t.data = data
+        t.sync()
+        actual = t.get_data()
+        self.assertTrue(np.array_equal(actual, data), (actual, data))
 
     def test_texture_auto_invalid(self):
         data = np.arange(32*32*4, dtype=np.int16)
