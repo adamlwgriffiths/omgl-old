@@ -5,6 +5,11 @@ from .buffer import Buffer
 from ..utilities import np_type_to_gl_enum
 
 
+def create(data, polygons=None, usage=GL.GL_DYNAMIC_DRAW):
+    buffer = ElementBuffer(data, polygons, usage)
+    buffer.sync()
+    return buffer
+
 def empty(shape, dtype=None, polygons=None, usage=GL.GL_DYNAMIC_DRAW):
     # we assume float32 for opengl
     if not dtype:
@@ -12,11 +17,6 @@ def empty(shape, dtype=None, polygons=None, usage=GL.GL_DYNAMIC_DRAW):
 
     data = np.empty(shape, dtype=dtype)
     return ElementBuffer(data, polygons, usage)
-
-def npdata(data, polygons=None, usage=GL.GL_DYNAMIC_DRAW):
-    buffer = ElementBuffer(data, polygons, usage)
-    buffer.sync()
-    return buffer
 
 
 class ElementBuffer(Buffer):

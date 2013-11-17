@@ -4,6 +4,11 @@ from OpenGL import GL
 from .buffer import Buffer
 
 
+def create(data, usage=GL.GL_DYNAMIC_DRAW):
+    buffer = Buffer(GL.GL_ARRAY_BUFFER, data, usage)
+    buffer.sync()
+    return buffer
+
 def empty(shape, dtype=None, usage=GL.GL_DYNAMIC_DRAW):
     # we assume float32 for opengl
     if not dtype:
@@ -11,8 +16,3 @@ def empty(shape, dtype=None, usage=GL.GL_DYNAMIC_DRAW):
 
     data = np.empty(shape, dtype=dtype)
     return Buffer(GL.GL_ARRAY_BUFFER, data, usage)
-
-def npdata(data, usage=GL.GL_DYNAMIC_DRAW):
-    buffer = Buffer(GL.GL_ARRAY_BUFFER, data, usage)
-    buffer.sync()
-    return buffer

@@ -3,6 +3,11 @@ import numpy as np
 from OpenGL import GL
 
 
+def create(target, data, usage=GL.GL_DYNAMIC_DRAW):
+    buffer = Buffer(target, data, usage)
+    buffer.sync()
+    return buffer
+
 def empty(target, shape, dtype=None, usage=GL.GL_DYNAMIC_DRAW):
     # we assume float32 for opengl
     if not dtype:
@@ -10,11 +15,6 @@ def empty(target, shape, dtype=None, usage=GL.GL_DYNAMIC_DRAW):
         
     data = np.empty(shape, dtype=dtype)
     return Buffer(target, data, usage)
-
-def npdata(target, data, usage=GL.GL_DYNAMIC_DRAW):
-    buffer = Buffer(target, data, usage)
-    buffer.sync()
-    return buffer
 
 
 class Buffer(object):
@@ -103,8 +103,8 @@ class Buffer(object):
     def get_data(self):
         """Returns the data stored in OpenGL.
 
-        This function should only be used for debugging as it is slow.
-        Use the cached data in the data property.
+        This function should only be used for debugging, or sparingly, as it is slow.
+        Use the cached 'data' property instead.
         """
         gl_data = np.empty_like(self._data)
         with self:

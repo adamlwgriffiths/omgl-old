@@ -12,7 +12,7 @@ class TestBuffer(unittest.TestCase):
 
     def test_npdata(self):
         data = np.arange(10, dtype=np.float32)
-        b = omgl.buffer.npdata(GL.GL_ARRAY_BUFFER, data)
+        b = omgl.buffer.create(GL.GL_ARRAY_BUFFER, data)
 
         self.assertTrue(np.array_equal(b.data, data), (b.data, data))
 
@@ -22,7 +22,7 @@ class TestBuffer(unittest.TestCase):
 
     def test_sync(self):
         data = np.arange(10, dtype=np.float32)
-        b = omgl.buffer.npdata(GL.GL_ARRAY_BUFFER, data)
+        b = omgl.buffer.create(GL.GL_ARRAY_BUFFER, data)
         self.assertTrue(np.array_equal(b.data, data), (b.data, data))
 
         # reverse the data
@@ -38,7 +38,7 @@ class TestBuffer(unittest.TestCase):
 
     def test_set_data(self):
         data = np.arange(10, dtype=np.float32)
-        b = omgl.buffer.npdata(GL.GL_ARRAY_BUFFER, data)
+        b = omgl.buffer.create(GL.GL_ARRAY_BUFFER, data)
         self.assertTrue(np.array_equal(b.data, data), (b.data, data))
         self.assertEqual(b.data.nbytes, 40)
 
