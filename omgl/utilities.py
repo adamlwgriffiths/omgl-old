@@ -74,6 +74,8 @@ def np_type_to_gl_enum(type):
         np.int8:        GL.GL_BYTE,
         np.int16:       GL.GL_SHORT,
         np.int32:       GL.GL_INT,
+        # BUG: OpenGL doesn't seem to define this! WTF?!
+        #np.float16:     GL.GL_HALF_FLOAT,
         np.float32:     GL.GL_FLOAT,
         np.float64:     GL.GL_DOUBLE,
         # http://docs.python.org/2/library/platform.html#cross-platform
