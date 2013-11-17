@@ -40,7 +40,6 @@ class TestTexture1D(unittest.TestCase):
         self.texture_auto(1, np.float32)
 
     def test_texture_auto_f32_rg(self):
-        # NOTE: This test FAILS because PyOpenGL doesn't declare GL_RG_INTEGER
         self.texture_auto(2, np.float32)
 
     def test_texture_auto_f32_rgb(self):
@@ -56,7 +55,6 @@ class TestTexture1D(unittest.TestCase):
         self.texture_auto(1, np.uint8)
 
     def test_texture_auto_ui8_rg(self):
-        # NOTE: This test FAILS because PyOpenGL doesn't declare GL_RG_INTEGER
         self.texture_auto(2, np.uint8)
 
     def test_texture_auto_ui8_rgb(self):
@@ -72,7 +70,6 @@ class TestTexture1D(unittest.TestCase):
         self.texture_auto(1, np.uint16)
 
     def test_texture_auto_ui16_rg(self):
-        # NOTE: This test FAILS because PyOpenGL doesn't declare GL_RG_INTEGER
         self.texture_auto(2, np.uint16)
 
     def test_texture_auto_ui16_rgb(self):
@@ -88,7 +85,6 @@ class TestTexture1D(unittest.TestCase):
         self.texture_auto(1, np.uint32)
 
     def test_texture_auto_ui32_rg(self):
-        # NOTE: This test FAILS because PyOpenGL doesn't declare GL_RG_INTEGER
         self.texture_auto(2, np.uint32)
 
     def test_texture_auto_ui32_rgb(self):
@@ -104,7 +100,6 @@ class TestTexture1D(unittest.TestCase):
         self.texture_auto(1, np.int8)
 
     def test_texture_auto_i8_rg(self):
-        # NOTE: This test FAILS because PyOpenGL doesn't declare GL_RG_INTEGER
         self.texture_auto(2, np.int8)
 
     def test_texture_auto_i8_rgb(self):
@@ -120,7 +115,6 @@ class TestTexture1D(unittest.TestCase):
         self.texture_auto(1, np.int16)
 
     def test_texture_auto_i16_rg(self):
-        # NOTE: This test FAILS because PyOpenGL doesn't declare GL_RG_INTEGER
         self.texture_auto(2, np.int16)
 
     def test_texture_auto_i16_rgb(self):
@@ -136,7 +130,6 @@ class TestTexture1D(unittest.TestCase):
         self.texture_auto(1, np.int32)
 
     def test_texture_auto_i32_rg(self):
-        # NOTE: This test FAILS because PyOpenGL doesn't declare GL_RG_INTEGER
         self.texture_auto(2, np.int32)
 
     def test_texture_auto_i32_rgb(self):
@@ -147,18 +140,34 @@ class TestTexture1D(unittest.TestCase):
 
 
     def test_texture_auto_invalid(self):
-        data = np.arange(32*32*4, dtype=np.int16)
+        data = np.arange(32*4, dtype=np.int16)
         with self.assertRaises(ValueError):
-            t = omgl.texture.create(data)
+            t = omgl.texture1d.create(data)
+
 
     def test_default_min_filter(self):
-        data = np.arange(32*32*4, dtype=np.float32)
-        data.shape = (32,32,4)
-        t = omgl.texture.create(data, min_filter=GL.GL_NEAREST)
+        data = np.arange(32*4, dtype=np.float32)
+        data.shape = (32,4)
+        t = omgl.texture1d.create(data, min_filter=GL.GL_NEAREST)
         self.assertEqual(t.min_filter, GL.GL_NEAREST)
+        with t:
+            filter = GL.glGetTexParameteriv(t.target, GL.GL_TEXTURE_MIN_FILTER)
+            self.assertEqual(t.min_filter, filter)
 
     def test_default_mag_filter(self):
-        data = np.arange(32*32*4, dtype=np.float32)
-        data.shape = (32,32,4)
-        t = omgl.texture.create(data, mag_filter=GL.GL_NEAREST)
+        data = np.arange(32*4, dtype=np.float32)
+        data.shape = (32,4)
+        t = omgl.texture1d.create(data, mag_filter=GL.GL_NEAREST)
         self.assertEqual(t.mag_filter, GL.GL_NEAREST)
+        with t:
+            filter = GL.glGetTexParameteriv(t.target, GL.GL_TEXTURE_MAG_FILTER)
+            self.assertEqual(t.mag_filter, filter)
+
+    def test_default_wrap_s(self):
+        data = np.arange(32*4, dtype=np.float32)
+        data.shape = (32,4)
+        t = omgl.texture1d.create(data, wrap_s=GL.GL_CLAMP_TO_EDGE)
+        self.assertEqual(t.wrap_s, GL.GL_CLAMP_TO_EDGE)
+        with t:
+            filter = GL.glGetTexParameteriv(t.target, GL.GL_TEXTURE_WRAP_S)
+            self.assertEqual(t.wrap_s, filter)

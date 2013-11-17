@@ -3,8 +3,8 @@ import numpy as np
 from OpenGL import GL
 from OpenGL.GL.ARB import texture_rg
 from schematics.models import Model, ModelMeta
-from schematics.types import BaseType
 from collections import OrderedDict
+from .types import TexturePropertyType
 from ..utilities import np_type_to_gl_enum
 
 
@@ -23,18 +23,6 @@ def empty(shape, dtype=None, target=None, internal_format=None, **kwargs):
 
 def load(filename):
     pass
-
-
-class TexturePropertyType(BaseType):
-    def __init__(self, enum, **kwargs):
-        BaseType.__init__(self, **kwargs)
-        self.enum = enum
-        self.mode = kwargs.get('default', None)
-
-    def sync(self, texture, mode):
-        if self.mode != mode:
-            GL.glTexParameteri(texture.target, self.enum, mode)
-            self.mode = mode
 
 
 class TextureMeta(ModelMeta):
@@ -203,47 +191,53 @@ class Texture(Model):
 
     @classmethod
     def infer_internal_format(cls, data):
-        # GL_RED doesn't give us specific types in PyOpenGL, so use GL_R
-        # GL_R and GL_RG should be taken from the rg extension
-        base, module = {
-            1:  ('GL_R', texture_rg),
-            2:  ('GL_RG', texture_rg),
-            3:  ('GL_RGB', GL),
-            4:  ('GL_RGBA', GL),
-        }[data.shape[-1]]
+        try:
+            # GL_RED doesn't give us specific types in PyOpenGL, so use GL_R
+            # GL_R and GL_RG should be taken from the rg extension
+            base, module = {
+                1:  ('GL_R', texture_rg),
+                2:  ('GL_RG', texture_rg),
+                3:  ('GL_RGB', GL),
+                4:  ('GL_RGBA', GL),
+            }[data.shape[-1]]
 
-        type = {
-            np.uint8:   '8UI',
-            np.uint16:  '16UI',
-            np.uint32:  '32UI',
-            np.int8:    '8I',
-            np.int16:   '16I',
-            np.int32:   '32I',
-            np.float16: '16F',
-            np.float32: '32F',
-        }[data.dtype.type]
+            type = {
+                np.uint8:   '8UI',
+                np.uint16:  '16UI',
+                np.uint32:  '32UI',
+                np.int8:    '8I',
+                np.int16:   '16I',
+                np.int32:   '32I',
+                np.float16: '16F',
+                np.float32: '32F',
+            }[data.dtype.type]
 
-        string = base + type
-        enum = getattr(module, string)
-        return enum
+            string = base + type
+            enum = getattr(module, string)
+            return enum
+        except KeyError as e:
+            raise ValueError(e.message)
 
     @classmethod
     def infer_format(cls, data):
-        # GL_R and GL_RG should be taken from the rg extension
-        base, module = {
-            1:  ('GL_RED', GL,),
-            2:  ('GL_RG', texture_rg,),
-            3:  ('GL_RGB', GL,),
-            4:  ('GL_RGBA', GL,),
-        }[data.shape[-1]]
+        try:
+            # GL_R and GL_RG should be taken from the rg extension
+            base, module = {
+                1:  ('GL_RED', GL,),
+                2:  ('GL_RG', texture_rg,),
+                3:  ('GL_RGB', GL,),
+                4:  ('GL_RGBA', GL,),
+            }[data.shape[-1]]
 
-        # integral types MUST be post-fixed with _INTEGER
-        # https://www.opengl.org/wiki/Pixel_Transfer#Pixel_format
-        if not np.issubdtype(data.dtype, float):
-            base += '_INTEGER'
+            # integral types MUST be post-fixed with _INTEGER
+            # https://www.opengl.org/wiki/Pixel_Transfer#Pixel_format
+            if not np.issubdtype(data.dtype, float):
+                base += '_INTEGER'
 
-        string = base
-        enum = getattr(module, string)
-        return enum
+            string = base
+            enum = getattr(module, string)
+            return enum
+        except KeyError as e:
+            raise ValueError(e.message)
 
 
