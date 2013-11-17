@@ -12,7 +12,7 @@ class TestArrayBuffer(unittest.TestCase):
 
     def test_npdata(self):
         data = np.arange(10, dtype=np.float32)
-        b = omgl.array_buffer.npdata(data)
+        b = omgl.array_buffer.create(data)
 
         self.assertTrue(np.array_equal(b.data, data), (b.data, data))
 

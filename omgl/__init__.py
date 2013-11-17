@@ -10,3 +10,6 @@ from .shader import shader, fragment_shader, vertex_shader, program
 
 # auto-shader
 from .auto_shader import auto_shader
+
+# texture
+from .texture import texture, texture1d, texture2d, texture3d

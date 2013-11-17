@@ -11,7 +11,7 @@ class TestElementBuffer(unittest.TestCase):
 
     def test_npdata(self):
         data = np.arange(10, dtype=np.float32)
-        b = omgl.element_buffer.npdata(data)
+        b = omgl.element_buffer.create(data)
 
         self.assertTrue(np.array_equal(b.data, data), (b.data, data))
 
@@ -22,7 +22,7 @@ class TestElementBuffer(unittest.TestCase):
 """
     def test_draw_preset(self):
         data = np.ones((1,), dtype=[('triangles', np.float32, 6)])
-        b = omgl.element_buffer.npdata(data)
+        b = omgl.element_buffer.create(data)
 
         # complex dtype means we can't use array_equal
         self.assertTrue(all(b.data == data))
@@ -31,7 +31,7 @@ class TestElementBuffer(unittest.TestCase):
 
     def test_draw_preset(self):
         data = np.ones((1,), dtype=[('triangles', np.float32, 6)])
-        b = omgl.element_buffer.npdata(data, polygons={'triangles': GL.GL_TRIANGLES})
+        b = omgl.element_buffer.create(data, polygons={'triangles': GL.GL_TRIANGLES})
 
         # complex dtype means we can't use array_equal
         self.assertTrue(all(b.data == data))
