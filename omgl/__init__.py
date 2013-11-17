@@ -13,3 +13,6 @@ from .auto_shader import auto_shader
 
 # texture
 from .texture import texture, texture1d, texture2d, texture3d
+
+# window
+from .window import window, glfw3, freeglut
