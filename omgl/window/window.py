@@ -29,5 +29,5 @@ class Window(object):
         pass
 
 
-from . import default
+from .default import create
 
