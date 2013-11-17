@@ -181,8 +181,8 @@ class Texture(Model):
                 red = GL.glGetTexImage(self._target, 0, red_enum, self.type, np.ndarray)
                 green = GL.glGetTexImage(self._target, 0, green_enum, self.type, np.ndarray)
                 gl_data = np.empty_like(self._npdata)
-                gl_data[:,:,0] = red
-                gl_data[:,:,1] = green
+                gl_data[...,0] = red
+                gl_data[...,1] = green
             else:
                 gl_data = GL.glGetTexImage(self._target, 0, format, self.type, np.ndarray)
         gl_data.shape = self._npdata.shape

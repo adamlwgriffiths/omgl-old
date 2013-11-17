@@ -5,12 +5,12 @@ from OpenGL import GL
 import omgl
 from omgl.tests import setUpModule, tearDownModule
 
-class TestTexture(unittest.TestCase):
+class TestTexture3D(unittest.TestCase):
 
     def texture_auto(self, size, dtype):
         data = np.arange(32*32*size, dtype=dtype)
         data.shape = (32,32,size)
-        t = omgl.texture.create(data)
+        t = omgl.texture2d.create(data)
         actual = t.get_data()
         self.assertTrue(np.array_equal(actual, data), (size, actual, data))
 
