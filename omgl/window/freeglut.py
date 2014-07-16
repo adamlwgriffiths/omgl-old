@@ -22,11 +22,28 @@ try:
         def __init__(self, size, title, gl_version=None, gl_forward_compat=True, **kwargs):
             initialise()
 
+            self._title = title
+
             GLUT.glutInitDisplayMode(GLUT.GLUT_DOUBLE | GLUT.GLUT_RGBA | GLUT.GLUT_DEPTH)
             GLUT.glutInitWindowSize(size[0], size[1])
             self.handle = GLUT.glutCreateWindow(title)
 
             self.activate()
+
+            GLUT.glutKeyboardFunc(self.on_key_press)
+            GLUT.glutSpecialFunc(self.on_special_press)
+
+        @property
+        def title(self):
+            return self._title
+
+        @title.setter
+        def title(self, title):
+            current = GLUT.glutGetWindow()
+            self.activate()
+            self._title = title
+            GLUT.glutSetWindowTitle(title)
+            GLUT.glutSetWindow(current)
 
         def activate(self):
             GLUT.glutSetWindow(self.handle)
@@ -44,5 +61,14 @@ try:
                 GLUT.glutHideWindow(self.handle)
                 GLUT.glutDestroyWindow(self.handle)
                 self.handle = None
+
+        def on_key_press(self, key, x, y):
+            # get the modifiers
+            mods = GLUT.glutGetModifiers()
+
+        def on_special_press(self, key, x, y):
+            # get the modifiers
+            mods = GLUT.glutGetModifiers()
+
 except:
     pass

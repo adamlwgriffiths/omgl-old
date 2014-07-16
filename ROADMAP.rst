@@ -174,5 +174,7 @@ IPC / Parallelism
 Voxel
 =====
 
+* 3D Numpy Array
+* Volume Ray Tracing Shader
 * SVO?
 * RLE / Hilbert Curve?

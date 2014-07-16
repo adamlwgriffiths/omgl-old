@@ -10,6 +10,9 @@ try:
         if not GLFW_Window.initialised:
             if not glfw.Init():
                 raise WindowException('Failed to initialise GLFW')
+
+            glfw.SetErrorCallback(error_callback)
+
             GLFW_Window.initialised = True
 
     @atexit.register
@@ -18,6 +21,11 @@ try:
             glfw.Terminate()
             GLFW_Window.initialised = False
 
+    last_error = None
+    def error_callback(error, message):
+        global last_error
+        last_error = message
+
     def create(size, title, gl_version=None, gl_forward_compat=True, **kwargs):
         return GLFW_Window(size, title, gl_version, gl_forward_compat, **kwargs)
 
@@ -25,11 +33,9 @@ try:
     class GLFW_Window(Window):
         initialised = False
         def __init__(self, size, title, gl_version=None, gl_forward_compat=True, **kwargs):
-            self.last_error = None
-
             initialise()
 
-            glfw.SetErrorCallback(self.error_callback)
+            self._title = title
 
             if gl_version:
                 glfw.WindowHint(glfw.CONTEXT_VERSION_MAJOR, gl_version[0])
@@ -46,6 +52,15 @@ try:
 
             self.activate()
 
+        @property
+        def title(self):
+            return self._title
+
+        @title.setter
+        def title(self, title):
+            self._title = title
+            return glfw.SetWindowTitle(self.handle, title)
+
         def activate(self):
             glfw.MakeContextCurrent(self.handle)
 
@@ -59,8 +74,5 @@ try:
             if self.handle:
                 glfw.DestroyWindow(self.handle)
                 self.handle = None
-
-        def error_callback(self, error, message):
-            self.last_error = message
 except:
     pass
