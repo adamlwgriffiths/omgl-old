@@ -4,6 +4,9 @@ OMGL
 
 A Pythonic 2D / 3D framework providing power through simplicity.
 
+This project is superseded by the new OMGL, https://github.com/adamlwgriffiths/omgl
+It remains here because it has some cool code (AutoShaders!)
+
 
 Dependencies
 ============
